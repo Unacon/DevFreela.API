@@ -10,10 +10,12 @@ using DevFreela.Application.Queries.GetProjectComments;
 using DevFreela.Core.DTOs;
 using DevFreela.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevFreela.API.Controllers
 {
+    [Authorize]
     [Route("api/projects")]
     public class ProjectsController : ControllerBase
     {
@@ -25,6 +27,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "client, freelancer")]
         public async Task<IActionResult> Get()
         {
             GetAllProjectsQuery request = new GetAllProjectsQuery();
@@ -33,6 +36,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "client, freelancer")]
         public async Task<IActionResult> GetById(int id)
         {
             GetByIdProjectsQuery request = new GetByIdProjectsQuery(id);
@@ -41,6 +45,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> Post([FromBody] CreateProjectCommand request)
         {
 
@@ -50,6 +55,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> Put([FromBody] UpdateProjectCommand request)
         {
 
@@ -59,6 +65,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> Delete(int id)
         {
             DeleteProjectCommand request = new DeleteProjectCommand(id);
@@ -69,6 +76,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPost("{id}/comments")]
+        [Authorize(Roles = "client, freelancer")]
         public async Task<IActionResult> CreateComment(int id, CreateCommentCommand request)
         {
 
@@ -77,6 +85,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpGet("{id}/comments")]
+        [Authorize(Roles = "client, freelancer")]
         public async Task<IActionResult> GetComment(int id)
         {
             GetProjectCommentsQuery command = new GetProjectCommentsQuery(id);
@@ -86,6 +95,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPut("{id}/start")]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> Start(int id)
         {
             StartProjectCommand resquest = new StartProjectCommand(id);
@@ -95,6 +105,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPut("{id}/finish")]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> Finish(int id)
         {
             FinishProjectCommand request = new FinishProjectCommand(id);

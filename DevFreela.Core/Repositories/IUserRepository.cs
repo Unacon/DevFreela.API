@@ -5,6 +5,7 @@ namespace DevFreela.Core.Repositories
     public interface IUserRepository
     {
         Task<User> GetUserAsync(int id);
+        Task<User> GetUserByEmailAndPasswordAsync(string email, string passwordHash);
         Task SaveChangeAsync();
         Task CreateSkillAsync(UserSkill request);
         Task CreateUserAsync(User request);

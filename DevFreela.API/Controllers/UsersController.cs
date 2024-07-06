@@ -3,14 +3,18 @@ using DevFreela.Application.Commands.ActiveUser;
 using DevFreela.Application.Commands.CreateFreelancerUser;
 using DevFreela.Application.Commands.CreateUser;
 using DevFreela.Application.Commands.DeleteSkillUser;
+using DevFreela.Application.Commands.LoginUser;
 using DevFreela.Application.Commands.UpdateUser;
 using DevFreela.Application.Queries.GetUser;
+using DevFreela.Application.ViewModels;
 using DevFreela.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevFreela.API.Controllers
 {
+    [Authorize]
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
@@ -21,7 +25,8 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById(int id) {
+        public async Task<IActionResult> GetById(int id)
+        {
 
             GetUserQuery request = new GetUserQuery(id);
             User response = await _mediator.Send(request);
@@ -36,7 +41,8 @@ namespace DevFreela.API.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpPost]        
         public async Task<IActionResult> Post([FromBody] CreateUserCommand request)
         {
             if (!ModelState.IsValid)
@@ -75,10 +81,16 @@ namespace DevFreela.API.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}/login")]
-        public IActionResult Login(int id, [FromBody] LoginModel login)
+        [AllowAnonymous]
+        [HttpPut("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserCommand login)
         {
-            return NoContent();
+            LoginUserViewModel loginUserViewModel = await _mediator.Send(login);
+                
+            if (loginUserViewModel == null)
+                return BadRequest();
+
+            return Ok(loginUserViewModel);
         }
     }
 }

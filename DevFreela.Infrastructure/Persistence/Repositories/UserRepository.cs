@@ -25,7 +25,7 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             User user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == id);
 
             if (user == null) return null;
-            return new User(user.FullName, user.Email, user.BithDate);
+            return new User(user.FullName, user.Email, user.BithDate, user.Password, user.Role);
         }
 
         public async Task SaveChangeAsync()
@@ -55,6 +55,13 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             UserSkill userSkill =  await _dbContext.UserSkill.FirstOrDefaultAsync(u => u.IdSkill == idSkill && u.IdUser == idUser);
 
             return userSkill;
+        }
+
+        public async Task<User> GetUserByEmailAndPasswordAsync(string email, string passwordHash)
+        {
+            return await _dbContext
+                .Users
+                .SingleOrDefaultAsync(item => item.Email == email && item.Password == passwordHash);
         }
     }
 }
