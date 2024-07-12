@@ -7,7 +7,6 @@ using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.Queries.GetAllProjects;
 using DevFreela.Application.Queries.GetByIdProjects;
 using DevFreela.Application.Queries.GetProjectComments;
-using DevFreela.Core.DTOs;
 using DevFreela.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -106,9 +105,9 @@ namespace DevFreela.API.Controllers
 
         [HttpPut("{id}/finish")]
         [Authorize(Roles = "client")]
-        public async Task<IActionResult> Finish(int id)
+        public async Task<IActionResult> Finish(int id, [FromBody] FinishProjectCommand request)
         {
-            FinishProjectCommand request = new FinishProjectCommand(id);
+            request.Id = id;
             await _mediator.Send(request);
 
             return Ok();

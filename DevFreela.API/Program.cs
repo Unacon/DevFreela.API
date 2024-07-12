@@ -1,10 +1,13 @@
 using DevFreela.API.Filters;
 using DevFreela.API.Models;
 using DevFreela.Application.Commands.CreateProject;
+using DevFreela.Application.Consumers;
 using DevFreela.Application.Validators;
 using DevFreela.Core.Repositories;
 using DevFreela.Core.Services;
 using DevFreela.Infrastructure.Auth;
+using DevFreela.Infrastructure.MessageBus;
+using DevFreela.Infrastructure.Payments;
 using DevFreela.Infrastructure.Persistence;
 using DevFreela.Infrastructure.Persistence.Repositories;
 using FluentValidation;
@@ -41,10 +44,16 @@ builder.Services.AddDbContext<DevFreelaDbContext>(
     options => options.UseSqlServer(connectionString)
     );
 
+builder.Services.AddHostedService<PaymentApprovedConsumer>();
+
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IMessageBusService, MessageBusService>();
 
 //builder.Services.AddSingleton<ExemploInjecaoDependencia>(e => new ExemploInjecaoDependencia { Name = "Teste 01" }); // Injeção por aplicação
 //builder.Services.AddScoped<ExemploInjecaoDependencia>(e => new ExemploInjecaoDependencia { Name = "Teste Scoped" });// Injeção por requisição

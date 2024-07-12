@@ -50,11 +50,16 @@ namespace DevFreela.Core.Entities
 
         public void Finish()
         {
-            if (Status == ProjectStatusEnum.InProgress)
+            if (Status == ProjectStatusEnum.PaymentPendent)
             {
                 Status = ProjectStatusEnum.Finished;
                 FinishedAt = DateTime.Now;
             };
+        }
+
+        public void PaymentPendent()
+        {
+            Status = ProjectStatusEnum.PaymentPendent;
         }
 
         public void Update(string title, string description, decimal totalCost)
